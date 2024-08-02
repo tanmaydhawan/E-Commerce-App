@@ -9,5 +9,6 @@ public interface CategoryService {
 	public List<Category> fetchAllCategories();
 	public String postCategory(Category category);
 	public String removeCategory(int categoryId);
+	public String editCategory(Category category, int categoryId);
 
 }
