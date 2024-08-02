@@ -30,10 +30,14 @@ public class CategoryServiceImpl implements CategoryService {
 		
 		Category category = categoryList.stream()
 					.filter(c-> c.getCategoryId()==categoryId)
-					.findFirst().get();
+					.findFirst().orElse(null);
+		
+		if (category==null) {
+			return "Category not found!";
+		}
 		
 		categoryList.remove(category);
-		return "Category deleted successfully"+ categoryId;
+		return "Category deleted successfully: "+ categoryId;
 	}
 
 }

@@ -29,7 +29,6 @@ public class CategoryController {
 	@PostMapping("/admin/category")
 	public String addCategory(@RequestBody Category category) {
 			return service.postCategory(category);
-
 	}
 	
 	@DeleteMapping("/admin/category/{categoryId}")

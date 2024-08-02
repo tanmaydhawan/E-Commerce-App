@@ -2,8 +2,6 @@ package com.springboot.ecommerce.service;
 
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
 import com.springboot.ecommerce.model.Category;
 
 public interface CategoryService {
