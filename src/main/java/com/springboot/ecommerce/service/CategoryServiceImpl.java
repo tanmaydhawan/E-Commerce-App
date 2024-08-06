@@ -33,11 +33,11 @@ public class CategoryServiceImpl implements CategoryService {
 
 		Optional<Category> category = repository.findById(categoryId);
 
-		if (category.isPresent()) {
-			repository.deleteById(categoryId);
-		} else {
+		if (!category.isPresent()) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found!");
 		}
+
+		repository.deleteById(categoryId);
 
 		return "Category deleted successfully: " + categoryId;
 	}
@@ -47,13 +47,14 @@ public class CategoryServiceImpl implements CategoryService {
 
 		Optional<Category> existingCategory = repository.findById(categoryId);
 
-		if (existingCategory.isPresent()) {
-			Category updatedCategory = existingCategory.get();
-			updatedCategory.setCategoryName(category.getCategoryName());
-			repository.save(updatedCategory);
-		} else {
+		if (!existingCategory.isPresent()) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not Found!");
 		}
+
+		Category updatedCategory = existingCategory.get();
+		updatedCategory.setCategoryName(category.getCategoryName());
+		repository.save(updatedCategory);
+
 		return "Category with id " + categoryId + " has been updated!";
 	}
 
