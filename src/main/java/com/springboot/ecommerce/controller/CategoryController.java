@@ -18,6 +18,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.springboot.ecommerce.model.Category;
 import com.springboot.ecommerce.service.CategoryService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api")
 public class CategoryController {
@@ -31,7 +33,7 @@ public class CategoryController {
 	}
 
 	@PostMapping("/admin/category")
-	public ResponseEntity<String> addCategory(@RequestBody Category category) {
+	public ResponseEntity<String> addCategory(@Valid @RequestBody Category category) {
 		String status = service.postCategory(category);
 		return ResponseEntity.status(HttpStatus.CREATED).body(status);
 	}
