@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
+import com.springboot.ecommerce.exceptions.ApiException;
+import com.springboot.ecommerce.exceptions.ResourceNotFoundException;
 import com.springboot.ecommerce.model.Category;
 import com.springboot.ecommerce.repository.CategoryRepository;
 
@@ -19,11 +19,24 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public List<Category> fetchAllCategories() {
-		return repository.findAll();
+
+		List<Category> categories = repository.findAll();
+
+		if (categories.isEmpty()) {
+			throw new ApiException("Please create a category before fetching!");
+		}
+		return categories;
 	}
 
 	@Override
 	public String postCategory(Category category) {
+
+		Optional<Category> savedCategory = repository.findByCategoryName(category.getCategoryName());
+
+		if (savedCategory.isPresent()) {
+			throw new ApiException("Category with this NAME already exists!");
+		}
+
 		repository.save(category);
 		return "Category Added successfully";
 	}
@@ -34,11 +47,10 @@ public class CategoryServiceImpl implements CategoryService {
 		Optional<Category> category = repository.findById(categoryId);
 
 		if (!category.isPresent()) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found!");
+			throw new ResourceNotFoundException("Category not found with id: " + categoryId);
 		}
 
 		repository.deleteById(categoryId);
-
 		return "Category deleted successfully: " + categoryId;
 	}
 
@@ -48,7 +60,7 @@ public class CategoryServiceImpl implements CategoryService {
 		Optional<Category> existingCategory = repository.findById(categoryId);
 
 		if (!existingCategory.isPresent()) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not Found!");
+			throw new ResourceNotFoundException("Category not found with id: " + categoryId);
 		}
 
 		Category updatedCategory = existingCategory.get();

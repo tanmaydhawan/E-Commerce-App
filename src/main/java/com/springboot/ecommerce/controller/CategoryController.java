@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.springboot.ecommerce.model.Category;
 import com.springboot.ecommerce.service.CategoryService;
@@ -40,23 +39,14 @@ public class CategoryController {
 
 	@PutMapping("/admin/category/{categoryId}")
 	public ResponseEntity<String> editCategory(@RequestBody Category category, @PathVariable int categoryId) {
-		try {
-			String status = service.editCategory(category, categoryId);
-			return new ResponseEntity<>(status, HttpStatus.OK);
-		} catch (ResponseStatusException e) {
-			return new ResponseEntity<>(e.getReason(), e.getStatusCode());
-		}
+		String status = service.editCategory(category, categoryId);
+		return new ResponseEntity<>(status, HttpStatus.OK);
 	}
 
 	@DeleteMapping("/admin/category/{categoryId}")
 	public ResponseEntity<String> deleteCatgory(@PathVariable int categoryId) {
-		try {
-			String status = service.removeCategory(categoryId);
-			return new ResponseEntity<>(status, HttpStatus.OK);
-
-		} catch (ResponseStatusException e) {
-			return new ResponseEntity<>(e.getReason(), e.getStatusCode());
-		}
+		String status = service.removeCategory(categoryId);
+		return new ResponseEntity<>(status, HttpStatus.OK);
 	}
 
 }
