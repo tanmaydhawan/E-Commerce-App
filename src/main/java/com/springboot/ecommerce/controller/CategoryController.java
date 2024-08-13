@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.springboot.ecommerce.config.AppConstants;
 import com.springboot.ecommerce.payload.CategoryDTO;
 import com.springboot.ecommerce.payload.CategoryResponse;
 import com.springboot.ecommerce.service.CategoryService;
@@ -26,8 +28,10 @@ public class CategoryController {
 	CategoryService service;
 
 	@GetMapping("/user/category")
-	public ResponseEntity<CategoryResponse> getAllCategory() {
-		return ResponseEntity.ok(service.fetchAllCategories());
+	public ResponseEntity<CategoryResponse> getAllCategory(
+			@RequestParam(defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+			@RequestParam(defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize) {
+		return ResponseEntity.ok(service.fetchAllCategories(pageNumber, pageSize));
 	}
 
 	@PostMapping("/admin/category")

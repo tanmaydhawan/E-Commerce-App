@@ -5,6 +5,9 @@ import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.springboot.ecommerce.exceptions.ApiException;
@@ -24,9 +27,12 @@ public class CategoryServiceImpl implements CategoryService {
 	private ModelMapper modelMapper;
 
 	@Override
-	public CategoryResponse fetchAllCategories() {
+	public CategoryResponse fetchAllCategories(Integer pageNumber, Integer pageSize) {
 
-		List<Category> categories = repository.findAll();
+		Pageable pageDetails = PageRequest.of(pageNumber, pageSize);
+		Page<Category> categoryPage = repository.findAll(pageDetails);
+		
+		List<Category> categories = categoryPage.getContent();
 
 		if (categories.isEmpty()) {
 			throw new ApiException("Please create a category before fetching!");
@@ -38,6 +44,11 @@ public class CategoryServiceImpl implements CategoryService {
 		
 		CategoryResponse response = new CategoryResponse();
 		response.setContent(list);
+		response.setPageNumber(categoryPage.getNumber());
+		response.setPageSize(categoryPage.getSize());
+		response.setTotalElements(categoryPage.getTotalElements());
+		response.setTotalPages(categoryPage.getTotalPages());
+		response.setLastPage(categoryPage.isLast());
 		
 		return response;
 	}
