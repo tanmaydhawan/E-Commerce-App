@@ -33,6 +33,12 @@ public class CategoryController {
 			@RequestParam(defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize) {
 		return ResponseEntity.ok(service.fetchAllCategories(pageNumber, pageSize));
 	}
+	
+	@GetMapping("/user/category/{categoryId}")
+	public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable int categoryId){
+		CategoryDTO returnedCategoryDTO = service.fetchCategorybyId(categoryId);
+		return new ResponseEntity<CategoryDTO>(returnedCategoryDTO, HttpStatus.OK);
+	}
 
 	@PostMapping("/admin/category")
 	public ResponseEntity<CategoryDTO> addCategory(@Valid @RequestBody CategoryDTO categoryDTO) {

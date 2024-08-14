@@ -28,15 +28,7 @@ public class GlobalExceptionHandler {
 		
 		return new ResponseEntity<Map<String,String>>(response, HttpStatus.BAD_REQUEST);
 	}
-	
-//	@ExceptionHandler(ResourceNotFoundException.class)
-//	public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException exception){
-//		
-//		String message = exception.getMessage();
-//		
-//		return new ResponseEntity<String>(message, HttpStatus.NOT_FOUND);
-//	}
-	
+
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<ErrorDetails> handleResourceNotFoundException(ResourceNotFoundException exception, WebRequest request){
 		

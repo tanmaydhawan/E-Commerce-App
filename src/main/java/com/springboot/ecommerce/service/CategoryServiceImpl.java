@@ -52,6 +52,17 @@ public class CategoryServiceImpl implements CategoryService {
 		
 		return response;
 	}
+	
+	@Override
+	public CategoryDTO fetchCategorybyId(int categoryId) {
+		Optional<Category> returnedCategory = repository.findById(categoryId);
+		
+		if (!returnedCategory.isPresent()) {
+			throw new ResourceNotFoundException("No Category found with id: "+categoryId);
+		}
+		
+		return modelMapper.map(returnedCategory, CategoryDTO.class);
+	}
 
 	@Override
 	public CategoryDTO postCategory(CategoryDTO categoryDTO) {
