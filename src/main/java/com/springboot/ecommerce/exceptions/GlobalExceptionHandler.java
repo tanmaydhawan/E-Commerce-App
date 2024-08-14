@@ -40,11 +40,24 @@ public class GlobalExceptionHandler {
 	}
 	
 	@ExceptionHandler(ApiException.class)
-	public ResponseEntity<String> handleApiException(ApiException exception){
+	public ResponseEntity<ErrorDetails> handleApiException(ApiException exception, WebRequest request){
 		
-		String message = exception.getMessage();
+		ErrorDetails errorDetails = new ErrorDetails(
+				HttpStatus.NOT_FOUND.value(),
+				exception.getMessage(), 
+				request.getDescription(false));
 		
-		return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ErrorDetails> handleUncheckedExceptions(Exception exception, WebRequest request){
+		ErrorDetails errorDetails = new ErrorDetails(
+				HttpStatus.BAD_REQUEST.value(),
+				exception.getMessage(),
+				request.getDescription(false));
+		
+		return ResponseEntity.badRequest().body(errorDetails);
 	}
 
 }
