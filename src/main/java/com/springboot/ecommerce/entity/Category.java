@@ -1,4 +1,4 @@
-package com.springboot.ecommerce.model;
+package com.springboot.ecommerce.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

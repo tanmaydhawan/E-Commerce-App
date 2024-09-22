@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.springboot.ecommerce.model.Category;
+import com.springboot.ecommerce.entity.Category;
 
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
 

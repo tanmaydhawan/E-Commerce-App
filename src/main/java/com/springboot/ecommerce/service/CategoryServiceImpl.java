@@ -10,9 +10,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.springboot.ecommerce.entity.Category;
 import com.springboot.ecommerce.exceptions.ApiException;
 import com.springboot.ecommerce.exceptions.ResourceNotFoundException;
-import com.springboot.ecommerce.model.Category;
 import com.springboot.ecommerce.payload.CategoryDTO;
 import com.springboot.ecommerce.payload.CategoryResponse;
 import com.springboot.ecommerce.repository.CategoryRepository;
