@@ -12,4 +12,6 @@ public interface ProductService {
 
 	ProductResponse searchByCategory(Integer categoryId);
 
+	ProductResponse searchProductsByKeyword(String keyword);
+
 }
