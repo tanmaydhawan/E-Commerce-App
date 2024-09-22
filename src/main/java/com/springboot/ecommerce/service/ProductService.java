@@ -10,4 +10,6 @@ public interface ProductService {
 
 	ProductResponse getAllProducts();
 
+	ProductResponse searchByCategory(Integer categoryId);
+
 }

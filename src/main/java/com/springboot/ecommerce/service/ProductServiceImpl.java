@@ -1,6 +1,7 @@
 package com.springboot.ecommerce.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,25 @@ public class ProductServiceImpl implements ProductService {
 	public ProductResponse getAllProducts() {
 
 		List<Product> productList = productRepository.findAll();
+		
+		List<ProductDTO> productDTOList = productList.stream()
+													.map(product -> modelMapper.map(product, ProductDTO.class))
+													.toList();
+		
+		ProductResponse response = new ProductResponse();
+		response.setContent(productDTOList);
+		return response;
+	}
+
+	@Override
+	public ProductResponse searchByCategory(Integer categoryId) {
+		
+		Optional<Category> category = categoryRepository.findById(categoryId);
+		
+		if(category.isEmpty()) {
+			throw new ResourceNotFoundException("No category found with id :"+categoryId);
+			}
+		List<Product> productList = productRepository.findByCategory(category);
 		
 		List<ProductDTO> productDTOList = productList.stream()
 													.map(product -> modelMapper.map(product, ProductDTO.class))
