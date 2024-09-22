@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.springboot.ecommerce.entity.Product;
 import com.springboot.ecommerce.payload.ProductDTO;
+import com.springboot.ecommerce.payload.ProductResponse;
 import com.springboot.ecommerce.service.ProductService;
 
 @RestController
@@ -28,6 +29,13 @@ public class ProductController {
 		ProductDTO createdProduct = productService.addProduct(product,categoryId);
 		
 		return new ResponseEntity<ProductDTO>(createdProduct,HttpStatus.OK);
+		
+	}
+	
+	@GetMapping("/user/product")
+	public ResponseEntity<ProductResponse> fetchAllProducts(){
+				
+		return new ResponseEntity<ProductResponse>(productService.getAllProducts(), HttpStatus.OK);
 		
 	}
 
