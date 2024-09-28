@@ -1,11 +1,18 @@
 package com.springboot.ecommerce.service;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.springboot.ecommerce.entity.Category;
 import com.springboot.ecommerce.entity.Product;
@@ -26,6 +33,9 @@ public class ProductServiceImpl implements ProductService {
 	
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Value("${product.image}")
+	private String path;
 
 	@Override
 	public ProductDTO addProduct(ProductDTO productDTO, Integer categoryId) {
@@ -126,6 +136,52 @@ public class ProductServiceImpl implements ProductService {
 		
 		return modelMapper.map(existingProduct, ProductDTO.class);
 
+	}
+
+	@Override
+	public ProductDTO updateProductImage(Long productId, MultipartFile imageFile) throws IOException {
+
+		//Get the product from db
+		Product productFromDB = productRepository.findById(productId).orElseThrow(()-> new ResourceNotFoundException("No product available!"));
+				
+		//Upload the image to server (/image)
+		//Get the file name of the uploaded image
+		String fileName = uploadImage(path, imageFile);
+		
+		//Updating the new file name to the product
+		productFromDB.setImage(fileName);
+		
+		//Save the updated product
+		Product updatedProduct = productRepository.save(productFromDB);
+		
+		//Return the updated product
+		return modelMapper.map(updatedProduct, ProductDTO.class);
+		
+	}
+
+	private String uploadImage(String path, MultipartFile imageFile) throws IOException {
+
+		//Get the file name of the OG file
+		String originalFileName = imageFile.getOriginalFilename(); 
+		
+		//generating a unique file name
+		//tanmay.jpg -> 12345 -> 12345.jpg
+		String randomId = UUID.randomUUID().toString();
+		String fileName = randomId.concat(originalFileName.substring(originalFileName.lastIndexOf('.')));
+		
+		String filePath = path + File.separator + fileName;
+		
+		//Check if path exists else create
+		File folder = new File(path);
+		if(!folder.exists()) {
+			folder.mkdir();
+		}
+		
+		//Upload the file to server
+		Files.copy(imageFile.getInputStream(), Paths.get(filePath));
+		
+		
+		return fileName;
 	}
 
 }
