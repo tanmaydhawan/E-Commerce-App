@@ -20,6 +20,8 @@ import com.springboot.ecommerce.payload.ProductDTO;
 import com.springboot.ecommerce.payload.ProductResponse;
 import com.springboot.ecommerce.service.ProductService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api")
 public class ProductController {
@@ -28,7 +30,7 @@ public class ProductController {
 	private ProductService productService;
 	
 	@PostMapping("/admin/category/{categoryId}/product")
-	public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO,
+	public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO productDTO,
 													@PathVariable Integer categoryId){
 		
 		ProductDTO createdProduct = productService.addProduct(productDTO,categoryId);
@@ -61,7 +63,7 @@ public class ProductController {
 	}
 	
 	@PutMapping("/admin/product/{productId}")
-	public ResponseEntity<ProductDTO> editProduct(@RequestBody ProductDTO productDTO, @PathVariable Long productId){
+	public ResponseEntity<ProductDTO> editProduct(@Valid @RequestBody ProductDTO productDTO, @PathVariable Long productId){
 		
 		ProductDTO editedProductDTO = productService.editProductById(productId, productDTO);
 		return new ResponseEntity<ProductDTO>(editedProductDTO,HttpStatus.OK);

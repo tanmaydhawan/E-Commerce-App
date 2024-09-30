@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.springboot.ecommerce.entity.Category;
 import com.springboot.ecommerce.entity.Product;
+import com.springboot.ecommerce.exceptions.ApiException;
 import com.springboot.ecommerce.exceptions.ResourceNotFoundException;
 import com.springboot.ecommerce.payload.ProductDTO;
 import com.springboot.ecommerce.payload.ProductResponse;
@@ -45,17 +47,32 @@ public class ProductServiceImpl implements ProductService {
 		Category category = categoryRepository.findById(categoryId)
 							.orElseThrow(()-> new ResourceNotFoundException("No Category Found!") );
 		
-		product.setCategory(category);
-		product.setImage("default.png");
+		boolean isProductNotPresent = true;
 		
-		double specialPrice = product.getPrice() - ((product.getDiscount()*0.01) * product.getPrice());
-		product.setSpecialPrice(specialPrice);
+		List<Product> products = category.getProducts();
 		
-		Product savedProduct = productRepository.save(product);
+		for(Product value : products) {
+			if(value.getProductName().equals(productDTO.getProductName())) {
+				isProductNotPresent = false;
+				break;
+			}
+		}
 		
-		ProductDTO savedProductDTO = modelMapper.map(savedProduct, ProductDTO.class);
-		
-		return savedProductDTO;
+		if (isProductNotPresent) {
+			product.setCategory(category);
+			product.setImage("default.png");
+
+			double specialPrice = product.getPrice() - ((product.getDiscount() * 0.01) * product.getPrice());
+			product.setSpecialPrice(specialPrice);
+
+			Product savedProduct = productRepository.save(product);
+
+			ProductDTO savedProductDTO = modelMapper.map(savedProduct, ProductDTO.class);
+
+			return savedProductDTO;
+		} else {
+			throw new ApiException("Product name already exists!");
+		}
 	}
 
 	@Override
