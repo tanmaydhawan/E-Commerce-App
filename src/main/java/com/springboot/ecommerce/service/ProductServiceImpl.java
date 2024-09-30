@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -12,6 +11,9 @@ import java.util.UUID;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -76,16 +78,24 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public ProductResponse getAllProducts() {
-
-		List<Product> productList = productRepository.findAll();
+	public ProductResponse getAllProducts(int pageNumber, int pageSize) {
 		
-		List<ProductDTO> productDTOList = productList.stream()
+		Pageable pageRequest = PageRequest.of(pageNumber, pageSize);
+		
+		Page<Product> productPage = productRepository.findAll(pageRequest);
+		
+		List<ProductDTO> productDTOList = productPage.stream()
 													.map(product -> modelMapper.map(product, ProductDTO.class))
 													.toList();
 		
 		ProductResponse response = new ProductResponse();
 		response.setContent(productDTOList);
+		response.setPageNumber(productPage.getNumber());
+		response.setPageSize(productPage.getSize());
+		response.setTotalElements(productPage.getTotalElements());
+		response.setTotalPages(productPage.getTotalPages());
+		response.setLastPage(productPage.isLast());
+		
 		return response;
 	}
 

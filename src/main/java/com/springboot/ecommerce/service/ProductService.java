@@ -11,7 +11,7 @@ public interface ProductService {
 
 	ProductDTO addProduct(ProductDTO productDTO, Integer categoryId);
 
-	ProductResponse getAllProducts();
+	ProductResponse getAllProducts(int pageNumber, int pageSize);
 
 	ProductResponse searchByCategory(Integer categoryId);
 

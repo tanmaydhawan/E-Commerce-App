@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.springboot.ecommerce.config.AppConstants;
 import com.springboot.ecommerce.payload.ProductDTO;
 import com.springboot.ecommerce.payload.ProductResponse;
 import com.springboot.ecommerce.service.ProductService;
@@ -40,9 +41,10 @@ public class ProductController {
 	}
 	
 	@GetMapping("/user/product")
-	public ResponseEntity<ProductResponse> fetchAllProducts(){
+	public ResponseEntity<ProductResponse> fetchAllProducts(@RequestParam(defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+			@RequestParam(defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize){
 				
-		return new ResponseEntity<ProductResponse>(productService.getAllProducts(), HttpStatus.OK);
+		return new ResponseEntity<ProductResponse>(productService.getAllProducts(pageNumber, pageSize), HttpStatus.OK);
 		
 	}
 	
